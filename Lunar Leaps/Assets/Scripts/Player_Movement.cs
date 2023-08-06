@@ -8,29 +8,30 @@ public class Player_Movement : MonoBehaviour
     public float speed = 5.0f;
     public float jumpStrength = 10.0f;
     private bool isFacingRight = true;
+    private bool isAlive = true;
+    private float halfscreenWidth = 8.0f;
+
 
 
     [SerializeField] private Rigidbody2D player_rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask platformLayer;
 
-    // Start is called before the first frame update
-    void Start()
+    void OnBecameInvisible()
     {
-        
+        triggerGameOver();
     }
-
     // Update is called once per frame
     void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
-        if (JumpStatus() == "canjump") 
+        if (JumpStatus() == "canjump" && isAlive) 
         {
             player_rb.velocity = new Vector2(player_rb.velocity.x, jumpStrength);
         }
         if (JumpStatus()=="jumpreleased")
         {
-            if(player_rb.velocity.y > 0)
+            if(player_rb.velocity.y > 0 && isAlive)
             {
                 player_rb.velocity = new Vector2(player_rb.velocity.x, player_rb.velocity.y * 0.5f);
             }
@@ -40,6 +41,31 @@ public class Player_Movement : MonoBehaviour
         MovePlayer();
 
     }
+
+
+    private void FixedUpdate()
+    {
+
+        player_rb.velocity = new Vector2(horizontal * speed, player_rb.velocity.y);
+        if (!InScreenHorizontal())
+        {
+            player_rb.velocity = new Vector2(0,0);
+        }
+
+    }
+    
+    private void MovePlayer()
+    {
+        if (IsFacingWrongDirection()) {
+            isFacingRight = !isFacingRight;
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
+        }
+    }
+
+
+
     private string JumpStatus()
     {
         if (Input.GetButtonDown("Jump") == true && IsGrounded())
@@ -51,7 +77,7 @@ public class Player_Movement : MonoBehaviour
             return "jumpreleased";
         }
         else { return ""; }
-        
+
     }
     private bool IsGrounded()
     {
@@ -67,21 +93,25 @@ public class Player_Movement : MonoBehaviour
         else { return false; }
     }
 
-    private void FixedUpdate()
+    private bool InScreenHorizontal()
     {
-        player_rb.velocity = new Vector2(horizontal * speed, player_rb.velocity.y);
-    }
-    
-    private void MovePlayer()
-    {
-        if (IsFacingWrongDirection()) {
-            isFacingRight = !isFacingRight;
-            Vector3 localScale = transform.localScale;
-            localScale.x *= -1f;
-            transform.localScale = localScale;
+        if (transform.position.x <= -1 * halfscreenWidth && !isFacingRight)
+        {
+            return false;
         }
+        if (transform.position.x >= halfscreenWidth && isFacingRight)
+        {
+            return false;
+        }
+        return true;
     }
 
+
+    private void triggerGameOver()
+    {
+        isAlive = false;
+        //TO DO
+    }
 }
 
 
