@@ -9,6 +9,7 @@ public class Player_Movement : MonoBehaviour
     public float jumpStrength = 10.0f;
     private bool isFacingRight = true;
 
+
     [SerializeField] private Rigidbody2D player_rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask platformLayer;
@@ -23,30 +24,57 @@ public class Player_Movement : MonoBehaviour
     void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
-        if (Input.GetButtonDown("Jump") == true && IsGrounded())
+        if (JumpStatus() == "canjump") 
         {
             player_rb.velocity = new Vector2(player_rb.velocity.x, jumpStrength);
         }
-        if (Input.GetButtonUp("Jump") == true && player_rb.velocity.y > 0)
+        if (JumpStatus()=="jumpreleased")
         {
-            player_rb.velocity = new Vector2(player_rb.velocity.x, player_rb.velocity.y*0.5f);
+            if(player_rb.velocity.y > 0)
+            {
+                player_rb.velocity = new Vector2(player_rb.velocity.x, player_rb.velocity.y * 0.5f);
+            }
+            
         }
    
-        FlipPlayer();
+        MovePlayer();
 
+    }
+    private string JumpStatus()
+    {
+        if (Input.GetButtonDown("Jump") == true && IsGrounded())
+        {
+            return "canjump";
+        }
+        if (Input.GetButtonUp("Jump") == true)
+        {
+            return "jumpreleased";
+        }
+        else { return ""; }
+        
     }
     private bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, platformLayer);
     }
+
+    private bool IsFacingWrongDirection()
+    {
+        if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
+        {
+            return true;
+        }
+        else { return false; }
+    }
+
     private void FixedUpdate()
     {
         player_rb.velocity = new Vector2(horizontal * speed, player_rb.velocity.y);
     }
     
-    private void FlipPlayer()
+    private void MovePlayer()
     {
-        if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f) {
+        if (IsFacingWrongDirection()) {
             isFacingRight = !isFacingRight;
             Vector3 localScale = transform.localScale;
             localScale.x *= -1f;
