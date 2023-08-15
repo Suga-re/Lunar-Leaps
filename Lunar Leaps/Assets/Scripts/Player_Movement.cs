@@ -10,6 +10,7 @@ public class Player_Movement : MonoBehaviour
     private bool isFacingRight = true;
     private bool isAlive = true;
     private float halfscreenWidth = 8.0f;
+    private float contJumps = 0;
 
 
 
@@ -27,6 +28,7 @@ public class Player_Movement : MonoBehaviour
         horizontal = Input.GetAxisRaw("Horizontal");
         if (JumpStatus() == "canjump" && isAlive) 
         {
+            contJumps += 1;
             player_rb.velocity = new Vector2(player_rb.velocity.x, jumpStrength);
         }
         if (JumpStatus()=="jumpreleased")
@@ -36,6 +38,10 @@ public class Player_Movement : MonoBehaviour
                 player_rb.velocity = new Vector2(player_rb.velocity.x, player_rb.velocity.y * 0.5f);
             }
             
+        }
+        if (IsGrounded())
+        {
+            contJumps = 0;
         }
    
         MovePlayer();
@@ -68,7 +74,7 @@ public class Player_Movement : MonoBehaviour
 
     private string JumpStatus()
     {
-        if (Input.GetButtonDown("Jump") == true && IsGrounded())
+        if (Input.GetButtonDown("Jump") == true && contJumps < 2)
         {
             return "canjump";
         }
