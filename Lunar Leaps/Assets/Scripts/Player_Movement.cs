@@ -17,6 +17,7 @@ public class Player_Movement : MonoBehaviour
     [SerializeField] private Rigidbody2D player_rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask platformLayer;
+    [SerializeField] private Animator animator;
 
     void OnBecameInvisible()
     {
@@ -26,10 +27,14 @@ public class Player_Movement : MonoBehaviour
     void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
+        animator.SetFloat("speed", Mathf.Abs(horizontal * speed));
+
         if (JumpStatus() == "canjump" && isAlive) 
         {
+            animator.SetBool("isJumping", true);
             contJumps += 1;
             player_rb.velocity = new Vector2(player_rb.velocity.x, jumpStrength);
+            
         }
         if (JumpStatus()=="jumpreleased")
         {
@@ -42,6 +47,7 @@ public class Player_Movement : MonoBehaviour
         if (IsGrounded())
         {
             contJumps = 0;
+            animator.SetBool("isJumping", false);
         }
    
         MovePlayer();
