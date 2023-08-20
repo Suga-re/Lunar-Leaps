@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     private float halfscreenWidth = 8.0f;
     private float contJumps = 0;
     private LogicManager logic;
+    private GameObject collidedObj;
 
 
 
@@ -32,6 +33,10 @@ public class PlayerMovement : MonoBehaviour
             triggerGameOver();
         }
         
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        collidedObj = collision.gameObject;
     }
     // Update is called once per frame
     void Update()
