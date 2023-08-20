@@ -145,3 +145,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 0
   deadZone: -30
+  isLit: 0
+  logic: {fileID: 0}
