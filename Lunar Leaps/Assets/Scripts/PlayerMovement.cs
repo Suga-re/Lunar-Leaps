@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isAlive = true;
     private float halfscreenWidth = 8.0f;
     private float contJumps = 0;
+    private LogicManager logic;
 
 
 
@@ -18,6 +19,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask platformLayer;
     [SerializeField] private Animator animator;
+
+    private void Start()
+    {
+        logic = GameObject.FindGameObjectWithTag("logic").GetComponent<LogicManager>();
+    }
 
     void OnBecameInvisible()
     {
@@ -131,6 +137,7 @@ public class PlayerMovement : MonoBehaviour
     private void triggerGameOver()
     {
         isAlive = false;
+        logic.gameOver();
         //TO DO
     }
 }

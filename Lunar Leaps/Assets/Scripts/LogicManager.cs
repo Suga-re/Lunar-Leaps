@@ -9,7 +9,9 @@ public class LogicManager : MonoBehaviour
 {
     private int score = 0;
     public TMPro.TMP_Text scoreText;
+    public TMPro.TMP_Text finalScoreText;
     public GameObject gameOverScreen;
+
 
     [ContextMenu("increase score")]
     public void addScore(int scoreToAdd, bool playerIsAlive)
@@ -27,8 +29,14 @@ public class LogicManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
     public void gameOver()
     {
+        finalScoreText.text += score.ToString();
         gameOverScreen.SetActive(true);
 
     }

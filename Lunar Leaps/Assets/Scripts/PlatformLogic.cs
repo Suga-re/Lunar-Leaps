@@ -9,6 +9,7 @@ public class PlatformMovement : MonoBehaviour
     public bool isLit = false;
     public LogicManager logic;
     private PlayerMovement player;
+    private GameObject ground;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +18,7 @@ public class PlatformMovement : MonoBehaviour
         }
         logic = GameObject.FindGameObjectWithTag("logic").GetComponent<LogicManager>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
+        ground = GameObject.FindGameObjectWithTag("ground");
 
     }
 
@@ -38,6 +40,7 @@ public class PlatformMovement : MonoBehaviour
             Debug.Log("add score");
             isLit = true;
             logic.addScore(1, player.checkIfAlive());
+            ground.SetActive(false);
         }
     }
 }
