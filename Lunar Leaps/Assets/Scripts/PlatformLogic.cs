@@ -37,6 +37,7 @@ public class PlatformLogic : MonoBehaviour
         transform.position += Vector3.down * movementSpeed * Time.deltaTime;
         if (transform.position.y < deadZone)
         {
+            tag = "destroyed";
             Debug.Log("Platform Deleted");
 
             Destroy(gameObject);
@@ -44,13 +45,21 @@ public class PlatformLogic : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 3 && isLit == false)
+        if (collision.gameObject.tag != "destroyed")
         {
-            Debug.Log("add score");
-            isLit = true;
-            spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
-            logic.addScore(1, player.checkIfAlive());
-            ground.SetActive(false);
+            if (collision.gameObject.layer == 3 && isLit == false)
+            {
+                Debug.Log("add score");
+                isLit = true;
+                spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+                logic.addScore(1, player.checkIfAlive());
+                if(ground!= null)
+                {
+                    ground.SetActive(false);
+                }
+                
+            }
         }
+
     }
 }
